@@ -9,7 +9,7 @@ console.log(gameArea.clientHeight);
 console.log(targetButton.offsetWidth);
 console.log(targetButton.offsetHeight);
 console.log(Math.floor(Math.random() * 100));
-let timeLeft = 20;
+let timeLeft = 5;
 let countdownInterval;
 const timerBar = document.querySelector("#timer-bar");
 let gameOver = false;
@@ -23,11 +23,11 @@ targetButton.addEventListener("click", function() {
 
     score++;
     clearInterval(countdownInterval);
-    timeLeft = 20;
+    timeLeft = 5;
     timerBar.style.transition = "none";
     timerBar.style.width = "100%";
     timerBar.offsetWidth;
-    timerBar.style.transition = "width 20s linear";
+    timerBar.style.transition = "width 5s linear";
     timerBar.style.width = "0%";
     countdownInterval = setInterval(countdown, 1000);
     scoreDisplay.textContent = score;
@@ -63,7 +63,7 @@ function countdown() {
 
 restartButton.addEventListener("click", function() {
     score = 0;
-    timeLeft = 20;
+    timeLeft = 5;
     scoreDisplay.textContent = score;
     timerBar.style.width = "100%";
     targetButton.disabled = false;
