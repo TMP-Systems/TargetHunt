@@ -6,8 +6,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Target Hunt</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://w3.org' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%230f0'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%23fff'/%3E%3Ccircle cx='50' cy='50' r='15' fill='%230f0'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
+    <style>
+        :root {
+            --accent-color: #00ff00;
+            --background-color: #171717;
+            --surface-color: #242424;
+            --text-color: #ffffff;
+            --link-color: #99C3FF;
+            --link-hover-color: #63a4ff;
+        }
+        
+        header {
+            position: relative;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: "Segoe UI", Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        h1, h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+        
+        a {
+            color: var(--link-color);
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--link-hover-color);
+        }
+        
+        .game-area {
+            position: relative;
+            width: 90%;
+            max-width: 700px;
+            height: min(400px, 45vh);
+            margin: 20px auto;
+            background-color: var(--surface-color);
+            border: 1px solid #444444;
+            border-radius: 10px;
+        }
+        
+        .target-button {
+            position: absolute;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        
+        .target-button:hover {
+            transform: scale(1.15);
+        }
+        
+        .timer-container {
+            width: 90%;
+            max-width: 400px;
+            height: 14px;
+            margin: 20px auto;
+            background-color: #444444;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        #timer-bar {
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent-color);
+            border-radius: 20px;
+            transition: width 3s linear;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #game-over-screen {
+            background-color: var(--surface-color);
+            border: 1px solid #444444;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        
+        #restart-button {
+            background-color: var(--accent-color);
+            color: #000000;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        const targetButton = document.querySelector(".target-button");
+        
+        let score = 0;
+        const scoreDisplay = document.querySelector("#score");
+        const gameArea = document.querySelector(".game-area");
+        
+        console.log(gameArea.clientWidth);
+        console.log(gameArea.clientHeight);
+        console.log(targetButton.offsetWidth);
+        console.log(targetButton.offsetHeight);
+        console.log(Math.floor(Math.random() * 100));
+        let timeLeft = 3;
+        let countdownInterval;
+        const timerBar = document.querySelector("#timer-bar");
+        let gameOver = false;
+        const gameOverScreen = document.querySelector("#game-over-screen");
+        const finalScoreDisplay = document.querySelector("#final-score");
+        const gameElements = document.querySelectorAll("main > *:not(#game-over-screen)");
+        const restartButton = document.querySelector("#restart-button");
+        
+        targetButton.addEventListener("click", function() {
+            if (gameOver) return;
+        
+            score++;
+            clearInterval(countdownInterval);
+            timeLeft = 3;
+            timerBar.style.transition = "none";
+            timerBar.style.width = "100%";
+            timerBar.offsetWidth;
+            timerBar.style.transition = "width 3s linear";
+            timerBar.style.width = "0%";
+            countdownInterval = setInterval(countdown, 1000);
+            scoreDisplay.textContent = score;
+            moveTarget();
+        });
+        
+        function moveTarget() {
+            const maxX = gameArea.clientWidth - targetButton.offsetWidth;
+            const maxY = gameArea.clientHeight - targetButton.offsetHeight;
+        
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+        
+            targetButton.style.left = randomX + "px";
+            targetButton.style.top = randomY + "px";
+        
+            console.log(randomX, randomY);
+        }
+        
+        function countdown() {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                gameOver = true;
+                targetButton.disabled = true;
+                clearInterval(countdownInterval);
+                gameOverScreen.classList.remove("hidden");
+                gameElements.forEach(function(element) {
+                    element.classList.add("hidden");
+                });
+                finalScoreDisplay.textContent = score;
+            }
+        }
+        
+        restartButton.addEventListener("click", function() {
+            score = 0;
+            timeLeft = 3;
+            scoreDisplay.textContent = score;
+            timerBar.style.width = "100%";
+            targetButton.disabled = false;
+            gameElements.forEach(function(element) {
+                element.classList.remove("hidden");
+            });
+            gameOverScreen.classList.add("hidden");
+            gameOver = false;
+            moveTarget();
+        });
+        
+        moveTarget();
+    </script>
 </head>
 <body>
 
